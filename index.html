@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Snow Animation</title>
+</head>
+<body>
+    
+    <canvas id="canvas"></canvas>
+
+    <script>
+        let canvas, ctx, w, h, snows;
+
+        function init() {
+            canvas = document.querySelector('#canvas');
+            ctx = canvas.getContext("2d");
+
+            resizeReset();
+            animationLoop();
+        }
+
+        function resizeReset(){
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+
+            snows = [];
+            for(let i = 0; i<100; i++){
+                snows.push(new Snow());
+            }
+        }
+
+        function animationLoop(){
+            ctx.clearRect(0,0,w,h);
+            drawScene();
+            requestAnimationFrame(animationLoop);
+        }
+
+        function drawScene(){
+            for(let i=0; i<snows.length; i++){
+                snows[i].update();
+                snows[i].draw();
+            }
+        }
+
+        function getRandomInit(min, max){
+            return Math.round(Math.random() * (max-min)) + min;
+        }
+
+        class Snow {
+            constructor(){
+                this.x = getRandomInit(0, w);
+                this.xc = 0.1;
+                this.y = getRandomInit(0, h);
+                this.yc = 0.1;
+                this.size = getRandomInit(10, 20) / 10;
+                this.rgb = "52, 235, 236";
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.rgb}, 1)`;
+                ctx.strokeStyle = `rgba(${this.rgb}, 1)`;
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+            }
+            update() {
+                this.x += this.xc;
+                this.y += this.yc;
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", init);
+        window.addEventListener("resize", resizeReset);
+    </script>
+</body>
+</html>
